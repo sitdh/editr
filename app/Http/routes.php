@@ -12,15 +12,9 @@
 */
 
 $app->get('/', function () use ($app) {
-    return $app->version();
+    return response()->json(['a'=>'b']); // $app->version();
 });
 
-$app->group(['prefix'	=> 'api/1.0',
-	'namespace'			=> 'App\Http\Controllers\API'], 
-	
-	function($app) {
+$app->post('api/question/submit', 'API\EditorServicesController@submit');
 
-	$app->get('course/{course_id}/', 'EditorServicesController@course');
-	
-});
-
+$app->get('api/question/{course_id}', 'API\EditorServicesController@course');
