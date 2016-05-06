@@ -22,13 +22,7 @@ class EditorServicesController extends Controller
 	public function submit(Request $request, $id)
 	{
 		// Get  test case
-		$content_url = sprintf(
-			config('service.course.testcase'),
-			$id	
-		);
-		$content = $this->getContent($content_url);
-
-		return response()->json($content);
+		$question_info = $this->getTestcaseInformation($id);
 
 		// Submit file and test case to compiler
 		//
@@ -45,6 +39,39 @@ class EditorServicesController extends Controller
 		);
 
 		return file_get_contents($url, false, $context);
+	}
+
+	protected function getTestcaseInformation($id) 
+	{
+		$content_url = sprintf(
+			config('service.course.testcase'),
+			$id	
+		);
+		$raw_data = $this->getContent($content_url);
+
+		$content = json_decode($raw_data);
+
+		return $this->questionCleanup($content);
+	}
+
+	protected function questionCleanup($content) 
+	{
+		$testcase = [];
+		foreach( $content->test_case as $tc ) 
+		{
+			$testset = [];
+
+			foreach( $tc->input as $t )
+			{
+				$testset[] = $t->value;
+			}
+
+			$testset[] = $tc->output->value;
+
+			$testcase[] = $testset;
+		}
+
+		return $testcase;
 	}
 
 }
