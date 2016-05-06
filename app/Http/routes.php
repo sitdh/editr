@@ -14,3 +14,13 @@
 $app->get('/', function () use ($app) {
     return $app->version();
 });
+
+$app->group(['prefix'	=> 'api',
+	'namespace'			=> 'App\Http\Controllers\API'], 
+	
+	function($app) {
+
+	$app->get('course/{course_id}/', 'EditorServicesController@course');
+	
+});
+
