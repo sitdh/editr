@@ -62,9 +62,7 @@ __ตำแหน่ง__: `api/question/{assessment_id}-{question_id}`
 __วิธีการเรียกใช้งาน__: `GET` 
 __คำอธิบาย__: ข้อมูลแบบทดสอบและคำถาม โดยที่ `assessment_id` และ `question_id` คือรหัส
 ของแบบทดสอบและคำถามตามลำดับ 
-__รูปแบบผลลัพธ์__: `{ 'info': { 'id': 2, 'description': '.....' } }`  
-  + `id`: รหัสคำถาม  
-  + `description`: คำอธิบาย หรือรายละเอียดเกี่ยวกับคำถามชุดนี้
+__รูปแบบผลลัพธ์__: [ตัวอย่างข้อความ](http://api2.mycodeville.com/attempt-assignment/1/question/1)  
 __ตัวอย่างการใช้งาน__: `http://localhost:8090/api/question/1-2`
 
 ### ตรวจสอบซอร์สโค้ด 
