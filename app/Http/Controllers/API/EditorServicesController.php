@@ -27,7 +27,7 @@ class EditorServicesController extends Controller
 		$result = $this->getCompileResult($script);
 
 		// return result
-		return response()->json([
+		return $this->tranformToJson([
 			'compiled' => [
 				'results'	=> $result
 			]
@@ -42,13 +42,25 @@ class EditorServicesController extends Controller
 		$script = $request->input('script'); 
 		$result = $this->getTestResult($script, $testsuite);
 
-		// return result
-		return response()->json([
+		return $this->tranformToJson([
 			'tested' => [
 				'results'	=> $result
 			]
 		]);
+	}
 
+	public function question($aid, $qid)
+	{
+		// Get  test case
+		$courseInformation = $this->getContent(
+			sprintf( 
+				config('service.course.information'),
+				max(1, ((int)$aid % 2)),
+				1 + ((int)$qid % 2)
+			)
+		);
+
+		return $this->tranformToJson($courseInformation);
 	}
 
 	protected function getContent($url)
@@ -62,20 +74,18 @@ class EditorServicesController extends Controller
 		return file_get_contents($url, false, $context);
 	}
 
-	protected function getTestcaseInformation($aid, $qid) 
+	protected function getTestcaseInformation($aid, $qid, $is_raw = false) 
 	{
 		$content_url = sprintf(
 			config('service.course.testcase'),
-			1,
-			1
-			# $qid	
-			# $qid	
+			max(1, ((int)$aid % 2)),
+			1 + ((int)$qid % 2)
 		);
 		$raw_data = $this->getContent($content_url);
 
 		$content = json_decode($raw_data);
 
-		return $this->questionCleanup($content);
+		return $is_raw ? $content : $this->questionCleanup($content) ;
 	}
 
 	protected function questionCleanup($content) 
@@ -150,4 +160,13 @@ class EditorServicesController extends Controller
 
 		return $server_respond;
 	}
+
+	protected function tranformToJson($content, $status = 0)
+	{
+		$status = (0 == $status) ? Response::HTTP_OK : $status ;
+		
+		return (new Response($content, $status))
+		   ->header('Content-Type', 'application/json');
+	}
 }
+
