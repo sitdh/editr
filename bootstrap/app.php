@@ -100,8 +100,11 @@ $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
 config([
 	'service'	=> [
 		'course' => [
-			'course_info'	=> '',
-			'testcase'		=> 'http://api2.mycodeville.com/attempt-assignment/%s/question/1/testcases'
+			'testcase'		=> 'http://api2.mycodeville.com/attempt-assignment/%s/question/%s/testcases'
+		],
+		'compiler' => [
+			'compile'		=> 'http://localhost/compile',
+			'test'			=> 'http://localhost/checkTestCase'
 		]	
 	]
 ]);
