@@ -1,1 +1,52 @@
-# Lumen PHP Framework [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework) [![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework) [![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework) [![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework) [![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework) Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching. ## Official Documentation Documentation for the framework can be found on the [Lumen website](http://lumen.laravel.com/docs). ## Security Vulnerabilities If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed. ## License The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+# Editr (อิดิเตอร์)
+
+Web API สำหรับการส่งข้อมูลจากตัวแก้ไขซอร์สโค้ด ไปยังบริการที่ทำหน้าที่คอมไพล์ (Compile) โค้ดต้นฉบับ
+และสอบทวนการทำงานของซอร์สโค้ดเทียบกับชุดของกรณีทดสอบ 
+
+## ส่วนประกอบ
+
+1. ส่วนแก้ไขซอร์สโค้ด (Editor)
+จะรับค่า หมายเลขรหัสแบบทดสอบ (Assessment Identification) และหมายเลขรหัสคำถาม 
+(Question Identification) ใช้สำหรับค้นหาคำถามและแบบทดสอบที่ผู้เรียนต้องใช้ มาจากส่วนจัดการ
+ข้อสอบ แล้วจึงส่งข้อมูลของซอร์สโค้ดไปยังคอมไพล์เลอร์ผ่าน `ส่วนเชื่อมต่อกับคอมไพล์เลอร์` เพื่อดูผลลัพธ์
+การทำงานเทียบกับกรณีทดสอบ หรือดูผลการทำงานเพื่อหาข้อผิดพลาด
+
+1. ส่วนเชื่อมต่อกับคอมไพล์เลอร์ (Compiler Interface)
+ใช้สำหรับเป็นตัวกลางในการเชื่อมต่อกับคอมไพล์เลอร์ มีหน้าที่จัดการข้อมูลที่ต้องส่งไปให้กับคอมไพล์เลอร์
+เช่น กรณีทดสอบ และนำผลลัพธ์ที่ได้คืนมาส่งกลับไปให้ยัง `ส่วนแก้ไขซอร์สโค้ด`
+
+1. คอมไพล์เลอร์ (Compiler)
+ทำหน้าที่ตรวจสอบความถูกต้องของซอร์สโค้ดด้านไวยากรณ์ของภาษาและการทำงานเมื่อเทียบเคียงกับ
+กรณีทดสอบ โดยรับค่าจาก `ส่วนเชื่อมต่อกับคอมไพลเลอร์` เพื่อใช้ในการทำงานการ
+
+
+## การตั้งค่า
+
+- ส่วนแก้ไขซอร์สโค้ด (Editor)
+จะใช้งาน [SDD-editor](https://github.com/guiderof/SDD-editor) ตามขึ้นตอนที่อธิบายไว้ด้านใน
+
+
+- ส่วนเชื่อมต่อกับคอมไพล์เลอร์ (Compiler Interface)
+ใช้งาน [editr](https://github.com/sitdh/editr) โดยมีขั้นตอนการปรับแต่งค่าต่างๆ ดังนี้
+  1. ภายในไฟล์ที่ชื่อว่า `bootstrap/app.php` บรรทัดที่ 100 จะพบกับฟังก์ชัน `config` ที่กำหนดค่า
+  ต่างๆ ที่ใช้ในการเชื่อมแต่ไว้ เช่น `service.course.testcase` สำหรับดึงข้อมูลของแบบทดสอบพร้อม
+  ทั้งรายการคำถาม ซึ่งด้านในจะมีเครื่องหมาย `%s` ในตำแหน่งของหมายเลขแบบทดสอบและคำถาม 
+  ตามลำดับ ซึ่งจะต้องแก้ไขในบรรทัดที่ 103 `testcase`, บรรทัดที่ 106 `compile` และ 
+  บรรทัดที่ 107 `test` เพื่อชี้ไปยังตำแหน่งของระบบที่ให้ให้ข้อมูล กรณีทดสอบ ตรวจสอบซอร์สโค้ด และ
+  ทดสอบซอร์สโค้ด ตามลำดับ
+
+  1. เริ่มต้นการทำงานด้วยคำสั่ง `php -S localhost:8090 -t public/` ณ ตำแหน่งบนสุด
+  ในลำดับขั้นโฟลเดอร์ของโปรเจค
+
+- คอมไพล์เลอร์ (Compiler)
+จะใช้งาน [SECU-API](https://github.com/sitdh/SECU-API) ในการทำงานเป็นหลัก โดยมีค่าที่
+ต้องกำหนดดังนี้
+  1. แก้ไขไฟล์ `.env` ด้วยการระบุตำแหน่งและข้อมูลการเข้าใช้งานฐานข้อมูลที่เหมาะสมกับเครื่อง
+  ที่ทดสอบ เช่น ชื่อฐานข้อมูล ชื่อผู้ใช้งาน รหัสผ่าน
+
+  1. ใช้คำสั่ง `php artisan make:migration` ณ ตำแหน่งบนสุดของโครงสร้างโฟลเดอร์ของโครงการ
+
+  1. ใช้คำสั่ง `php artisan db:seed` ณ ตำแหน่งเดียวกัน
+
+  1. ใช้คำสั่ง `php -S localhost:80` คำสั่งนี้อาจจะจำเป็นที่จะต้องใช้สิทธิของผู้ดูแลระบบของเครื่อง
+  ทดสอบ
