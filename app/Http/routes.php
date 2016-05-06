@@ -15,6 +15,6 @@ $app->get('/', function () use ($app) {
     return response()->json(['a'=>'b']); // $app->version();
 });
 
-$app->post('api/question/submit', 'API\EditorServicesController@submit');
+$app->post('api/question/submit/{id}', 'API\EditorServicesController@submit');
 
 $app->get('api/question/{course_id}', 'API\EditorServicesController@course');

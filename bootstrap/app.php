@@ -97,4 +97,13 @@ $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../app/Http/routes.php';
 });
 
+config([
+	'service'	=> [
+		'course' => [
+			'course_info'	=> '',
+			'testcase'		=> 'http://api2.mycodeville.com/attempt-assignment/%s/question/1/testcases'
+		]	
+	]
+]);
+
 return $app;
