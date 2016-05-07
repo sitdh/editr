@@ -34,8 +34,11 @@ class EditorServicesController extends Controller
 		]);
 	}
 
-	public function testScript(Request $request, $aid, $qid) 
+	public function testScript(Request $request) 
 	{
+		$aid = $request->input('aid') == null ? 1 : $request->input('aid');
+		$qid = $request->input('qid') == null ? 1 : $request->input('qid');
+
 		// Get  test case
 		$testsuite = $this->getTestcaseInformation($aid, $qid);
 
@@ -49,8 +52,11 @@ class EditorServicesController extends Controller
 		]);
 	}
 
-	public function question($aid, $qid)
+	public function question(Request $req)
 	{
+		$aid = $req->input('aid') == null ? 1 : $req->input('aid');
+		$qid = $req->input('qid') == null ? 1 : $req->input('qid');
+
 		// Get  test case
 		$courseInformation = $this->getContent(
 			sprintf( 
